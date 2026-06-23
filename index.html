@@ -1,0 +1,435 @@
+<style>
+  :root{
+    --bg:#0A0B0A; --panel:#101210; --line:#1C201C; --line2:#262C26;
+    --text:#E2E8E2; --muted:#5A6A58; --dim:#33402F;
+    --acc-accu:#5A9EC8; --acc-int:#7ABF5A; --acc-pic:#D4753A; --acc-deload:#BF5A9E; --acc-extra:#7A7A7A;
+    --gold:#C8A03A;
+  }
+  *{box-sizing:border-box;}
+  .clog{font-family:'DM Sans','Segoe UI',sans-serif;color:var(--text);background:var(--bg);min-height:100%;padding-bottom:50px;}
+  .mono{font-family:'JetBrains Mono','Courier New',monospace;}
+  .clog input{font-family:'JetBrains Mono','Courier New',monospace;}
+
+  /* Header */
+  .c-head{background:linear-gradient(135deg,#0D0F0C 0%,#0A0B0A 100%);border-bottom:1px solid var(--line);padding:26px 22px 18px;}
+  .c-head-inner{max-width:980px;margin:0 auto;}
+  .c-eyebrow{font-size:9px;letter-spacing:.3em;color:var(--gold);font-family:'JetBrains Mono',monospace;margin-bottom:8px;}
+  .c-title{margin:0;font-size:clamp(22px,4.5vw,32px);font-weight:600;letter-spacing:-0.02em;}
+  .c-sub{margin:6px 0 0;font-size:11.5px;color:var(--muted);}
+
+  .wrap{max-width:980px;margin:0 auto;padding:18px 16px 0;}
+
+  /* Block tabs */
+  .block-row{display:flex;gap:6px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
+  .block-tab{padding:8px 14px;background:var(--panel);border:1px solid var(--line);border-radius:5px;cursor:pointer;font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:.05em;transition:all .15s;}
+  .block-tab.active{background:#C8A03A14;border-color:#C8A03A55;color:var(--gold);}
+  .block-add{padding:8px 12px;background:transparent;border:1px dashed var(--line2);border-radius:5px;cursor:pointer;font-size:11px;color:var(--dim);font-family:'JetBrains Mono',monospace;}
+  .block-add:hover{color:var(--gold);border-color:var(--gold);}
+  .block-del{padding:8px 10px;background:transparent;border:1px solid var(--line);border-radius:5px;cursor:pointer;font-size:10px;color:#8a4a4a;font-family:'JetBrains Mono',monospace;}
+
+  .block-name-row{display:flex;align-items:center;gap:10px;margin-bottom:14px;}
+  .block-name-input{background:transparent;border:none;border-bottom:1px solid var(--line2);color:var(--text);font-size:16px;font-weight:600;padding:4px 2px;outline:none;font-family:'DM Sans',sans-serif;}
+  .block-name-input:focus{border-color:var(--gold);}
+
+  /* Phase legend */
+  .legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;padding:10px 14px;background:var(--panel);border:1px solid var(--line);border-radius:6px;}
+  .legend-item{display:flex;align-items:center;gap:6px;font-size:9.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:.05em;}
+  .legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+  /* Day tabs */
+  .day-row{display:flex;gap:6px;margin-bottom:14px;}
+  .day-tab{flex:1;padding:9px 6px;background:var(--panel);border:1px solid var(--line);border-radius:5px;cursor:pointer;font-size:10px;letter-spacing:.1em;font-weight:700;color:var(--dim);font-family:'JetBrains Mono',monospace;text-align:center;transition:all .15s;}
+  .day-tab.active{color:var(--text);border-color:var(--line2);background:#16191600;}
+  .day-tab .dtl{font-size:9px;opacity:.65;margin-top:2px;letter-spacing:.05em;font-weight:400;}
+
+  .day-title-edit{width:100%;background:transparent;border:none;color:var(--text);font-size:14px;font-weight:600;padding:10px 2px;margin-bottom:8px;outline:none;border-bottom:1px solid var(--line);}
+  .day-title-edit:focus{border-color:var(--gold);}
+
+  /* Table */
+  .tbl-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:6px;background:var(--panel);}
+  table.log{width:100%;border-collapse:collapse;font-size:11.5px;}
+  table.log th, table.log td{padding:9px 8px;border-bottom:1px solid var(--line);white-space:nowrap;}
+  table.log th{font-family:'JetBrains Mono',monospace;font-size:9px;letter-spacing:.08em;color:var(--muted);text-align:center;font-weight:600;border-bottom:1px solid var(--line2);position:sticky;top:0;}
+  table.log td.col-ex{position:sticky;left:0;background:var(--panel);min-width:170px;white-space:normal;border-right:1px solid var(--line2);z-index:2;}
+  table.log th.col-ex{position:sticky;left:0;background:var(--panel);z-index:3;border-right:1px solid var(--line2);text-align:left;min-width:170px;}
+  .ex-name-input{width:100%;background:transparent;border:none;color:var(--text);font-size:12.5px;font-family:'DM Sans',sans-serif;outline:none;padding:2px 0;}
+  .ex-target-input{width:100%;background:transparent;border:none;color:var(--muted);font-size:9.5px;font-family:'JetBrains Mono',monospace;outline:none;padding:1px 0;margin-top:2px;}
+  td.col-week{text-align:center;}
+  .wcell{width:48px;background:#08090800;border:1px solid var(--line2);border-radius:4px;color:var(--text);text-align:center;padding:5px 2px;font-size:11.5px;outline:none;}
+  .wcell:focus{border-color:var(--gold);background:#C8A03A0A;}
+  .wcell::placeholder{color:#2A302A;}
+  th.col-week-head{padding:6px 4px 4px;}
+  .phase-pill{display:inline-block;font-size:7.5px;letter-spacing:.08em;padding:1px 5px;border-radius:8px;margin-bottom:3px;}
+  .col-spark{text-align:center;min-width:70px;}
+  .col-del{text-align:center;width:30px;}
+  .del-btn{background:transparent;border:none;color:#3A302A;cursor:pointer;font-size:13px;}
+  .del-btn:hover{color:#A85050;}
+
+  .add-row-btn{display:block;width:100%;padding:10px;background:transparent;border:none;border-top:1px solid var(--line);color:var(--dim);font-size:10.5px;letter-spacing:.08em;font-family:'JetBrains Mono',monospace;cursor:pointer;text-align:left;padding-left:14px;}
+  .add-row-btn:hover{color:var(--gold);}
+
+  .week-actions{display:flex;justify-content:flex-end;gap:6px;margin-top:10px;}
+  .wk-btn{padding:6px 10px;background:transparent;border:1px dashed var(--line2);border-radius:4px;color:var(--dim);font-size:9.5px;font-family:'JetBrains Mono',monospace;cursor:pointer;}
+  .wk-btn:hover{color:var(--gold);border-color:var(--gold);}
+
+  .status{font-size:9.5px;color:var(--dim);font-family:'JetBrains Mono',monospace;letter-spacing:.08em;margin-top:14px;text-align:right;}
+  .status.saved{color:var(--acc-int);}
+
+  .loading{padding:60px 20px;text-align:center;color:var(--muted);font-size:12px;font-family:'JetBrains Mono',monospace;}
+
+  .foot-note{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);font-size:10px;color:var(--dim);font-family:'JetBrains Mono',monospace;line-height:1.8;}
+</style>
+
+<div class="clog" id="clog-root">
+  <div class="c-head">
+    <div class="c-head-inner">
+      <div class="c-eyebrow">CARNET D'ENTRAÎNEMENT · VERSION HORS-LIGNE</div>
+      <h1 class="c-title">Ton journal de charges</h1>
+      <p class="c-sub">Renseigne le poids soulevé chaque semaine. La progression se lit directement sur chaque ligne.</p>
+    </div>
+  </div>
+  <div class="wrap" id="clog-body">
+    <div class="loading">Chargement du carnet…</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const STORAGE_KEY = "carnet_musculation_v1";
+  const PHASES = {
+    accu:    { label: "Accumulation", color: "#5A9EC8" },
+    inten:   { label: "Intensification", color: "#7ABF5A" },
+    pic:     { label: "Pic", color: "#D4753A" },
+    deload:  { label: "Deload", color: "#BF5A9E" },
+    extra:   { label: "Continuité", color: "#7A7A7A" },
+  };
+
+  function defaultWeeks(){
+    return [
+      { label: "S1", phase: "accu" },
+      { label: "S2", phase: "accu" },
+      { label: "S3", phase: "inten" },
+      { label: "S4", phase: "inten" },
+      { label: "S5", phase: "inten" },
+      { label: "S6", phase: "pic" },
+      { label: "S7", phase: "deload" },
+    ];
+  }
+
+  function emptyWeights(n){ return new Array(n).fill(""); }
+
+  function defaultBlock(idx){
+    const weeks = defaultWeeks();
+    const n = weeks.length;
+    return {
+      id: "bloc_" + Date.now() + "_" + idx,
+      name: "Bloc " + idx,
+      weeks: weeks,
+      days: {
+        A: {
+          title: "Jour A — Force",
+          exercises: [
+            { name: "Squat barre", target: "4×5–7", weights: emptyWeights(n) },
+            { name: "Développé couché barre", target: "4×5–7", weights: emptyWeights(n) },
+            { name: "Rowing barre", target: "4×5–7", weights: emptyWeights(n) },
+            { name: "Développé militaire haltères", target: "3×6–8", weights: emptyWeights(n) },
+            { name: "Leg curl couché", target: "3×8–10", weights: emptyWeights(n) },
+          ]
+        },
+        B: {
+          title: "Jour B — Hypertrophie",
+          exercises: [
+            { name: "Développé incliné haltères", target: "4×8–12", weights: emptyWeights(n) },
+            { name: "Traction lestée", target: "4×6–10", weights: emptyWeights(n) },
+            { name: "Presse à cuisses", target: "4×10–15", weights: emptyWeights(n) },
+            { name: "Élévations latérales câble", target: "4×12–15", weights: emptyWeights(n) },
+            { name: "Curl haltères incliné", target: "3×10–12", weights: emptyWeights(n) },
+            { name: "Extension mollets debout", target: "3×12–15", weights: emptyWeights(n) },
+          ]
+        },
+        C: {
+          title: "Jour C — Volume",
+          exercises: [
+            { name: "Fentes bulgares", target: "3×8–10/j", weights: emptyWeights(n) },
+            { name: "Écarté poulie basse", target: "3×12–15", weights: emptyWeights(n) },
+            { name: "Rowing 1 bras haltère", target: "3×10–12", weights: emptyWeights(n) },
+            { name: "Hip thrust barre", target: "3×10–12", weights: emptyWeights(n) },
+            { name: "Face pull câble", target: "3×15–20", weights: emptyWeights(n) },
+            { name: "Triceps poulie haute", target: "3×12–15", weights: emptyWeights(n) },
+          ]
+        }
+      }
+    };
+  }
+
+  let state = null; // { blocks: [...], activeBlockId, activeDay }
+  let saveTimer = null;
+
+  async function loadState(){
+    try{
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        state = JSON.parse(raw);
+        return;
+      }
+    }catch(e){ /* storage unavailable or empty -> create default */ }
+    const b1 = defaultBlock(1);
+    state = { blocks: [b1], activeBlockId: b1.id, activeDay: "A" };
+    await persist();
+  }
+
+  async function persist(){
+    const statusEl = document.getElementById("save-status");
+    try{
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      if (statusEl){ statusEl.textContent = "Sauvegardé ✓"; statusEl.classList.add("saved"); }
+    }catch(e){
+      if (statusEl){ statusEl.textContent = "Erreur de sauvegarde"; statusEl.classList.remove("saved"); }
+      console.error("Storage error:", e);
+    }
+  }
+
+  function scheduleSave(){
+    const statusEl = document.getElementById("save-status");
+    if (statusEl){ statusEl.textContent = "Enregistrement…"; statusEl.classList.remove("saved"); }
+    if (saveTimer) clearTimeout(saveTimer);
+    saveTimer = setTimeout(persist, 500);
+  }
+
+  function getActiveBlock(){
+    return state.blocks.find(b => b.id === state.activeBlockId) || state.blocks[0];
+  }
+
+  function sparkline(weights, color){
+    const nums = weights.map(w => parseFloat(w)).filter(n => !isNaN(n) && n > 0);
+    if (nums.length < 1) return '<span style="color:#2A302A;font-size:9px;">—</span>';
+    const max = Math.max(...nums), min = Math.min(...nums);
+    const range = max - min || 1;
+    const w = 60, h = 20, n = weights.length;
+    let points = [];
+    weights.forEach((wt, i) => {
+      const val = parseFloat(wt);
+      if (!isNaN(val) && val > 0) {
+        const x = (i / (n - 1 || 1)) * w;
+        const y = h - ((val - min) / range) * (h - 4) - 2;
+        points.push([x, y]);
+      }
+    });
+    if (points.length < 2) {
+      return `<svg width="${w}" height="${h}"><circle cx="${points[0]?.[0]||0}" cy="${points[0]?.[1]||10}" r="2.5" fill="${color}"/></svg>`;
+    }
+    const path = points.map((p,i) => (i===0?"M":"L") + p[0].toFixed(1) + "," + p[1].toFixed(1)).join(" ");
+    const last = points[points.length-1];
+    return `<svg width="${w}" height="${h}"><path d="${path}" fill="none" stroke="${color}" stroke-width="1.6"/><circle cx="${last[0].toFixed(1)}" cy="${last[1].toFixed(1)}" r="2.5" fill="${color}"/></svg>`;
+  }
+
+  function render(){
+    const body = document.getElementById("clog-body");
+    const block = getActiveBlock();
+    const day = block.days[state.activeDay];
+    const dayColor = state.activeDay === "A" ? "#C8875A" : state.activeDay === "B" ? "#5A9EC8" : "#7ABF5A";
+
+    let html = "";
+
+    // Block tabs
+    html += '<div class="block-row">';
+    state.blocks.forEach(b => {
+      html += `<div class="block-tab ${b.id===block.id?'active':''}" data-action="select-block" data-id="${b.id}">${escapeHtml(b.name)}</div>`;
+    });
+    html += `<div class="block-add" data-action="add-block">+ Nouveau bloc</div>`;
+    if (state.blocks.length > 1) {
+      html += `<div class="block-del" data-action="del-block" data-id="${block.id}">Suppr. bloc</div>`;
+    }
+    html += '</div>';
+
+    // Block name
+    html += `<div class="block-name-row"><input class="block-name-input" data-action="rename-block" value="${escapeAttr(block.name)}" /></div>`;
+
+    // Legend
+    html += '<div class="legend">';
+    Object.keys(PHASES).forEach(k => {
+      const used = block.weeks.some(w => w.phase === k);
+      if (!used) return;
+      html += `<div class="legend-item"><div class="legend-dot" style="background:${PHASES[k].color}"></div>${PHASES[k].label.toUpperCase()}</div>`;
+    });
+    html += '</div>';
+
+    // Day tabs
+    html += '<div class="day-row">';
+    [["A","Lundi"],["B","Mercredi"],["C","Vendredi"]].forEach(([id,label]) => {
+      const active = state.activeDay === id;
+      html += `<div class="day-tab ${active?'active':''}" data-action="select-day" data-id="${id}" style="${active?`border-color:${dayColor}55;color:${dayColor};background:${dayColor}14;`:''}">${id}<div class="dtl">${label}</div></div>`;
+    });
+    html += '</div>';
+
+    // Day title
+    html += `<input class="day-title-edit" data-action="rename-day" value="${escapeAttr(day.title)}" />`;
+
+    // Table
+    html += '<div class="tbl-scroll"><table class="log"><thead><tr>';
+    html += '<th class="col-ex">EXERCICE</th>';
+    block.weeks.forEach((w, wi) => {
+      const ph = PHASES[w.phase] || PHASES.extra;
+      html += `<th class="col-week-head"><span class="phase-pill" style="background:${ph.color}22;color:${ph.color};">${ph.label.slice(0,4).toUpperCase()}</span><br/><input class="ex-target-input" style="text-align:center;color:${ph.color};font-size:10px;" data-action="rename-week" data-week="${wi}" value="${escapeAttr(w.label)}" /></th>`;
+    });
+    html += '<th class="col-spark">PROGRESSION</th><th class="col-del"></th>';
+    html += '</tr></thead><tbody>';
+
+    day.exercises.forEach((ex, ei) => {
+      html += '<tr>';
+      html += `<td class="col-ex">
+        <input class="ex-name-input" data-action="rename-ex" data-ex="${ei}" value="${escapeAttr(ex.name)}" />
+        <input class="ex-target-input" data-action="retarget-ex" data-ex="${ei}" value="${escapeAttr(ex.target)}" />
+      </td>`;
+      block.weeks.forEach((w, wi) => {
+        const ph = PHASES[w.phase] || PHASES.extra;
+        const val = ex.weights[wi] !== undefined ? ex.weights[wi] : "";
+        html += `<td class="col-week"><input type="number" step="0.5" class="wcell" style="border-color:${ph.color}33;" placeholder="kg" data-action="weight" data-ex="${ei}" data-week="${wi}" value="${escapeAttr(val)}" /></td>`;
+      });
+      html += `<td class="col-spark">${sparkline(ex.weights, dayColor)}</td>`;
+      html += `<td class="col-del"><button class="del-btn" data-action="del-ex" data-ex="${ei}">✕</button></td>`;
+      html += '</tr>';
+    });
+
+    html += '</tbody></table>';
+    html += '<button class="add-row-btn" data-action="add-ex">+ Ajouter un exercice</button>';
+    html += '</div>';
+
+    // Week actions
+    html += '<div class="week-actions">';
+    html += '<button class="wk-btn" data-action="add-week">+ Ajouter une semaine</button>';
+    if (block.weeks.length > 1) html += '<button class="wk-btn" data-action="del-week">− Retirer dernière semaine</button>';
+    html += '</div>';
+
+    html += `<div class="status" id="save-status">—</div>`;
+
+    html += `<div class="foot-note">
+      Chaque ligne montre la progression de charge sur l'ensemble du bloc — c'est ta preuve de surcharge progressive.
+      Couleurs des semaines = phase de périodisation (accumulation → intensification → pic → deload).
+    </div>`;
+
+    body.innerHTML = html;
+    attachHandlers();
+  }
+
+  function escapeHtml(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+  function escapeAttr(s){ return escapeHtml(s); }
+
+  function attachHandlers(){
+    const body = document.getElementById("clog-body");
+
+    body.querySelectorAll('[data-action="select-block"]').forEach(el => {
+      el.addEventListener("click", () => { state.activeBlockId = el.dataset.id; render(); });
+    });
+
+    body.querySelectorAll('[data-action="select-day"]').forEach(el => {
+      el.addEventListener("click", () => { state.activeDay = el.dataset.id; render(); });
+    });
+
+    const addBlockBtn = body.querySelector('[data-action="add-block"]');
+    if (addBlockBtn) addBlockBtn.addEventListener("click", () => {
+      const nb = defaultBlock(state.blocks.length + 1);
+      state.blocks.push(nb);
+      state.activeBlockId = nb.id;
+      scheduleSave(); render();
+    });
+
+    const delBlockBtn = body.querySelector('[data-action="del-block"]');
+    if (delBlockBtn) delBlockBtn.addEventListener("click", () => {
+      const id = delBlockBtn.dataset.id;
+      state.blocks = state.blocks.filter(b => b.id !== id);
+      state.activeBlockId = state.blocks[0].id;
+      scheduleSave(); render();
+    });
+
+    const renameBlockInput = body.querySelector('[data-action="rename-block"]');
+    if (renameBlockInput) renameBlockInput.addEventListener("change", () => {
+      getActiveBlock().name = renameBlockInput.value;
+      scheduleSave();
+    });
+
+    const renameDayInput = body.querySelector('[data-action="rename-day"]');
+    if (renameDayInput) renameDayInput.addEventListener("change", () => {
+      getActiveBlock().days[state.activeDay].title = renameDayInput.value;
+      scheduleSave();
+    });
+
+    body.querySelectorAll('[data-action="rename-week"]').forEach(el => {
+      el.addEventListener("change", () => {
+        const wi = parseInt(el.dataset.week, 10);
+        getActiveBlock().weeks[wi].label = el.value;
+        scheduleSave();
+      });
+    });
+
+    body.querySelectorAll('[data-action="rename-ex"]').forEach(el => {
+      el.addEventListener("change", () => {
+        const ei = parseInt(el.dataset.ex, 10);
+        getActiveBlock().days[state.activeDay].exercises[ei].name = el.value;
+        scheduleSave();
+      });
+    });
+
+    body.querySelectorAll('[data-action="retarget-ex"]').forEach(el => {
+      el.addEventListener("change", () => {
+        const ei = parseInt(el.dataset.ex, 10);
+        getActiveBlock().days[state.activeDay].exercises[ei].target = el.value;
+        scheduleSave();
+      });
+    });
+
+    body.querySelectorAll('[data-action="weight"]').forEach(el => {
+      el.addEventListener("input", () => {
+        const ei = parseInt(el.dataset.ex, 10);
+        const wi = parseInt(el.dataset.week, 10);
+        getActiveBlock().days[state.activeDay].exercises[ei].weights[wi] = el.value;
+        scheduleSave();
+        // live update sparkline only, without full re-render to keep focus
+        const row = el.closest("tr");
+        const sparkCell = row.querySelector(".col-spark");
+        const ex = getActiveBlock().days[state.activeDay].exercises[ei];
+        const dayColor = state.activeDay === "A" ? "#C8875A" : state.activeDay === "B" ? "#5A9EC8" : "#7ABF5A";
+        if (sparkCell) sparkCell.innerHTML = sparkline(ex.weights, dayColor);
+      });
+    });
+
+    body.querySelectorAll('[data-action="del-ex"]').forEach(el => {
+      el.addEventListener("click", () => {
+        const ei = parseInt(el.dataset.ex, 10);
+        getActiveBlock().days[state.activeDay].exercises.splice(ei, 1);
+        scheduleSave(); render();
+      });
+    });
+
+    const addExBtn = body.querySelector('[data-action="add-ex"]');
+    if (addExBtn) addExBtn.addEventListener("click", () => {
+      const n = getActiveBlock().weeks.length;
+      getActiveBlock().days[state.activeDay].exercises.push({ name: "Nouvel exercice", target: "3×10", weights: emptyWeights(n) });
+      scheduleSave(); render();
+    });
+
+    const addWeekBtn = body.querySelector('[data-action="add-week"]');
+    if (addWeekBtn) addWeekBtn.addEventListener("click", () => {
+      const b = getActiveBlock();
+      const newLabel = "S" + (b.weeks.length + 1);
+      b.weeks.push({ label: newLabel, phase: "extra" });
+      Object.values(b.days).forEach(d => d.exercises.forEach(ex => ex.weights.push("")));
+      scheduleSave(); render();
+    });
+
+    const delWeekBtn = body.querySelector('[data-action="del-week"]');
+    if (delWeekBtn) delWeekBtn.addEventListener("click", () => {
+      const b = getActiveBlock();
+      b.weeks.pop();
+      Object.values(b.days).forEach(d => d.exercises.forEach(ex => ex.weights.pop()));
+      scheduleSave(); render();
+    });
+  }
+
+  // Init
+  loadState().then(render).catch(err => {
+    document.getElementById("clog-body").innerHTML = '<div class="loading">Erreur de chargement du carnet. Réessaie en rechargeant.</div>';
+    console.error(err);
+  });
+})();
+</script>
