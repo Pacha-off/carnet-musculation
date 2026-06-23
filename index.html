@@ -78,6 +78,31 @@
   .loading{padding:60px 20px;text-align:center;color:var(--muted);font-size:12px;font-family:'JetBrains Mono',monospace;}
 
   .foot-note{margin-top:26px;padding-top:16px;border-top:1px solid var(--line);font-size:10px;color:var(--dim);font-family:'JetBrains Mono',monospace;line-height:1.8;}
+
+  /* User gate */
+  .gate{display:flex;align-items:center;justify-content:center;padding:50px 10px;min-height:320px;}
+  .gate-card{width:100%;max-width:360px;background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:26px 22px;}
+  .gate-label{font-size:9px;letter-spacing:.25em;color:var(--gold);font-family:'JetBrains Mono',monospace;margin-bottom:18px;text-align:center;}
+  .gate-users{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+  .gate-user-row{display:flex;align-items:center;gap:6px;}
+  .gate-user{flex:1;display:flex;align-items:center;gap:10px;padding:11px 12px;background:#0A0B0A;border:1px solid var(--line2);border-radius:7px;color:var(--text);cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;text-align:left;transition:all .15s;}
+  .gate-user:hover{border-color:var(--gold);background:#C8A03A0C;}
+  .gate-avatar{width:26px;height:26px;border-radius:50%;background:#C8A03A22;color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+  .gate-user-del{background:transparent;border:none;color:#3A302A;cursor:pointer;font-size:13px;padding:6px;}
+  .gate-user-del:hover{color:#A85050;}
+  .gate-empty{font-size:11px;color:var(--muted);text-align:center;margin-bottom:18px;line-height:1.7;}
+  .gate-new{display:flex;gap:6px;}
+  .gate-input{flex:1;background:#0A0B0A;border:1px solid var(--line2);border-radius:6px;color:var(--text);padding:10px 10px;font-size:12px;outline:none;font-family:'DM Sans',sans-serif;}
+  .gate-input:focus{border-color:var(--gold);}
+  .gate-create{background:#C8A03A18;border:1px solid #C8A03A55;border-radius:6px;color:var(--gold);padding:10px 14px;font-size:11px;font-family:'JetBrains Mono',monospace;cursor:pointer;letter-spacing:.04em;}
+  .gate-create:hover{background:#C8A03A28;}
+
+  /* User bar inside app */
+  .user-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding:9px 12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;}
+  .user-bar-name{font-size:12.5px;color:var(--text);font-family:'DM Sans',sans-serif;}
+  .user-bar-name b{color:var(--gold);}
+  .user-bar-switch{background:transparent;border:1px solid var(--line2);border-radius:5px;padding:6px 10px;color:var(--muted);font-size:9.5px;font-family:'JetBrains Mono',monospace;cursor:pointer;letter-spacing:.05em;}
+  .user-bar-switch:hover{color:var(--gold);border-color:var(--gold);}
 </style>
 
 <div class="clog" id="clog-root">
@@ -95,7 +120,20 @@
 
 <script>
 (function(){
-  const STORAGE_KEY = "carnet_musculation_v1";
+  const USERS_KEY = "carnet_users_list_v1";
+  const LAST_USER_KEY = "carnet_last_user_v1";
+  let currentUser = null;
+
+  function getUsers(){
+    try{ return JSON.parse(localStorage.getItem(USERS_KEY) || "[]"); }
+    catch(e){ return []; }
+  }
+  function saveUsers(list){
+    try{ localStorage.setItem(USERS_KEY, JSON.stringify(list)); }
+    catch(e){ console.error("Storage error:", e); }
+  }
+  function dataKey(){ return "carnet_data_v1::" + currentUser; }
+
   const PHASES = {
     accu:    { label: "Accumulation", color: "#5A9EC8" },
     inten:   { label: "Intensification", color: "#7ABF5A" },
@@ -167,7 +205,7 @@
 
   async function loadState(){
     try{
-      const raw = localStorage.getItem(STORAGE_KEY);
+      const raw = localStorage.getItem(dataKey());
       if (raw) {
         state = JSON.parse(raw);
         return;
@@ -181,7 +219,7 @@
   async function persist(){
     const statusEl = document.getElementById("save-status");
     try{
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      localStorage.setItem(dataKey(), JSON.stringify(state));
       if (statusEl){ statusEl.textContent = "Sauvegardé ✓"; statusEl.classList.add("saved"); }
     }catch(e){
       if (statusEl){ statusEl.textContent = "Erreur de sauvegarde"; statusEl.classList.remove("saved"); }
@@ -230,6 +268,9 @@
     const dayColor = state.activeDay === "A" ? "#C8875A" : state.activeDay === "B" ? "#5A9EC8" : "#7ABF5A";
 
     let html = "";
+
+    // User bar
+    html += `<div class="user-bar"><span class="user-bar-name">👤 Profil : <b>${escapeHtml(currentUser)}</b></span><button class="user-bar-switch" data-action="switch-user">Changer de profil</button></div>`;
 
     // Block tabs
     html += '<div class="block-row">';
@@ -317,6 +358,9 @@
 
   function attachHandlers(){
     const body = document.getElementById("clog-body");
+
+    const switchBtn = body.querySelector('[data-action="switch-user"]');
+    if (switchBtn) switchBtn.addEventListener("click", () => { renderGate(); });
 
     body.querySelectorAll('[data-action="select-block"]').forEach(el => {
       el.addEventListener("click", () => { state.activeBlockId = el.dataset.id; render(); });
@@ -426,10 +470,75 @@
     });
   }
 
+  function renderGate(){
+    const body = document.getElementById("clog-body");
+    const users = getUsers();
+    let html = '<div class="gate"><div class="gate-card">';
+    html += '<div class="gate-label">CHOISIR UN PROFIL</div>';
+    if (users.length){
+      html += '<div class="gate-users">';
+      users.forEach(u => {
+        html += `<div class="gate-user-row">
+          <button class="gate-user" data-action="gate-select" data-name="${escapeAttr(u)}"><span class="gate-avatar">${escapeHtml(u.charAt(0).toUpperCase())}</span>${escapeHtml(u)}</button>
+          <button class="gate-user-del" data-action="gate-del" data-name="${escapeAttr(u)}">✕</button>
+        </div>`;
+      });
+      html += '</div>';
+    } else {
+      html += '<div class="gate-empty">Aucun profil encore.<br/>Crée le premier ci-dessous.</div>';
+    }
+    html += '<div class="gate-new"><input class="gate-input" id="gate-new-input" placeholder="Nouveau prénom…" maxlength="24" /><button class="gate-create" data-action="gate-create">Créer</button></div>';
+    html += '</div></div>';
+    body.innerHTML = html;
+
+    body.querySelectorAll('[data-action="gate-select"]').forEach(el => {
+      el.addEventListener("click", () => chooseUser(el.dataset.name));
+    });
+
+    body.querySelectorAll('[data-action="gate-del"]').forEach(el => {
+      el.addEventListener("click", (e) => {
+        e.stopPropagation();
+        const name = el.dataset.name;
+        if (!window.confirm('Supprimer le profil "' + name + '" et tout son carnet ?')) return;
+        const remaining = getUsers().filter(u => u !== name);
+        saveUsers(remaining);
+        try{ localStorage.removeItem("carnet_data_v1::" + name); }catch(err){}
+        try{ if (localStorage.getItem(LAST_USER_KEY) === name) localStorage.removeItem(LAST_USER_KEY); }catch(err){}
+        renderGate();
+      });
+    });
+
+    const createBtn = body.querySelector('[data-action="gate-create"]');
+    const input = body.querySelector('#gate-new-input');
+    function tryCreate(){
+      const name = (input.value || "").trim();
+      if (!name) return;
+      chooseUser(name);
+    }
+    if (createBtn) createBtn.addEventListener("click", tryCreate);
+    if (input) input.addEventListener("keydown", (e) => { if (e.key === "Enter") tryCreate(); });
+    if (input) input.focus();
+  }
+
+  async function chooseUser(name){
+    const users = getUsers();
+    if (!users.includes(name)) { users.push(name); saveUsers(users); }
+    currentUser = name;
+    try{ localStorage.setItem(LAST_USER_KEY, name); }catch(e){}
+    await loadState();
+    render();
+  }
+
   // Init
-  loadState().then(render).catch(err => {
-    document.getElementById("clog-body").innerHTML = '<div class="loading">Erreur de chargement du carnet. Réessaie en rechargeant.</div>';
-    console.error(err);
-  });
+  const lastUser = (function(){ try{ return localStorage.getItem(LAST_USER_KEY); }catch(e){ return null; } })();
+  if (lastUser) {
+    currentUser = lastUser;
+    loadState().then(render).catch(err => {
+      document.getElementById("clog-body").innerHTML = '<div class="loading">Erreur de chargement du carnet. Réessaie en rechargeant.</div>';
+      console.error(err);
+    });
+  } else {
+    renderGate();
+  }
 })();
 </script>
