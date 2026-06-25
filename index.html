@@ -65,7 +65,7 @@
   table.log td.col-ex{position:sticky;left:0;background:var(--panel);min-width:175px;white-space:normal;border-right:1px solid var(--line2);z-index:2;}
   table.log th.col-ex{position:sticky;left:0;background:var(--panel);z-index:3;border-right:1px solid var(--line2);text-align:left;min-width:175px;}
   .ex-name-input{width:100%;background:transparent;border:none;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;padding:2px 0;}
-  .ex-target-input{width:100%;background:transparent;border:none;color:var(--muted);font-size:11px;font-family:'JetBrains Mono',monospace;outline:none;padding:1px 0;margin-top:2px;}
+  .ex-target-input{width:100%;background:transparent;border:none;color:var(--muted);font-size:15px;font-family:'JetBrains Mono',monospace;outline:none;padding:1px 0;margin-top:2px;}
   td.col-week{text-align:center;}
   .wcell-group{display:flex;flex-direction:column;gap:4px;width:60px;margin:0 auto;}
   .wcell-labels{display:flex;justify-content:space-between;padding:0 2px;margin-bottom:1px;}
@@ -130,7 +130,7 @@
     table.log th, table.log td{padding:7px 5px;}
     table.log td.col-ex, table.log th.col-ex{min-width:130px;}
     .ex-name-input{font-size:13.5px;}
-    .wcell-group{width:56px;}
+    .wcell-group{width:60px;}
     .wcell{font-size:17px;padding:7px 2px;}
     .wcell-reps{font-size:15px;}
     .col-spark{min-width:54px;}
@@ -145,7 +145,7 @@
 
     /* Empêche le zoom automatique iOS sur les champs de saisie */
     .wcell, .gate-input, .block-name-input, .day-title-edit{font-size:17px;}
-    .ex-target-input{font-size:12px;}
+    .ex-target-input{font-size:16px;}
 
     .user-bar{padding:10px;}
     .user-bar-name{font-size:13px;}
@@ -157,7 +157,7 @@
 
   @media (max-width: 380px){
     table.log td.col-ex, table.log th.col-ex{min-width:110px;}
-    .wcell-group{width:50px;}
+    .wcell-group{width:52px;}
     .wcell{font-size:16px;}
     .wcell-reps{font-size:14px;}
   }
@@ -390,7 +390,7 @@
     html += '<th class="col-ex">EXERCICE</th>';
     block.weeks.forEach((w, wi) => {
       const ph = PHASES[w.phase] || PHASES.extra;
-      html += `<th class="col-week-head"><span class="phase-pill" style="background:${ph.color}22;color:${ph.color};">${ph.label.slice(0,4).toUpperCase()}</span><br/><input class="ex-target-input" style="text-align:center;color:${ph.color};font-size:10px;" data-action="rename-week" data-week="${wi}" value="${escapeAttr(w.label)}" /></th>`;
+      html += `<th class="col-week-head"><span class="phase-pill" style="background:${ph.color}22;color:${ph.color};">${ph.label.slice(0,4).toUpperCase()}</span><br/><input class="ex-target-input" style="text-align:center;color:${ph.color};font-size:14px;" data-action="rename-week" data-week="${wi}" value="${escapeAttr(w.label)}" /></th>`;
     });
     html += '<th class="col-spark">PROGRESSION</th><th class="col-del"></th>';
     html += '</tr></thead><tbody>';
