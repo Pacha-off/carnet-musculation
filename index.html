@@ -4,15 +4,15 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="mobile-web-app-capable" content="yes">
-<meta name="theme-color" content="#0A0B0A">
+<meta name="theme-color" content="#F7F8F4">
 <title>Carnet de musculation</title>
 <style>
-  html, body { margin:0; padding:0; background:#0A0B0A; -webkit-text-size-adjust:100%; }
+  html, body { margin:0; padding:0; background:#F7F8F4; -webkit-text-size-adjust:100%; }
   :root{
-    --bg:#0A0B0A; --panel:#101210; --line:#1C201C; --line2:#262C26;
-    --text:#E2E8E2; --muted:#5A6A58; --dim:#33402F;
+    --bg:#F7F8F4; --panel:#FFFFFF; --line:#E6E8E1; --line2:#D4D7CD;
+    --text:#161B12; --muted:#4F5E48; --dim:#A6AE9C;
     --acc-accu:#5A9EC8; --acc-int:#7ABF5A; --acc-pic:#D4753A; --acc-deload:#BF5A9E; --acc-extra:#7A7A7A;
     --gold:#C8A03A;
   }
@@ -23,7 +23,7 @@
   .clog input{font-family:'JetBrains Mono','Courier New',monospace;}
 
   /* Header */
-  .c-head{background:linear-gradient(135deg,#0D0F0C 0%,#0A0B0A 100%);border-bottom:1px solid var(--line);padding:26px 22px 18px;}
+  .c-head{background:linear-gradient(135deg,#FFFFFF 0%,#F7F8F4 100%);border-bottom:1px solid var(--line);padding:26px 22px 18px;}
   .c-head-inner{max-width:980px;margin:0 auto;}
   .c-eyebrow{font-size:10px;letter-spacing:.3em;color:var(--gold);font-family:'JetBrains Mono',monospace;margin-bottom:8px;}
   .c-title{margin:0;font-size:clamp(23px,4.6vw,33px);font-weight:600;letter-spacing:-0.02em;}
@@ -34,7 +34,7 @@
   /* Block tabs */
   .block-row{display:flex;gap:6px;align-items:center;margin-bottom:16px;flex-wrap:wrap;}
   .block-tab{padding:8px 14px;background:var(--panel);border:1px solid var(--line);border-radius:5px;cursor:pointer;font-size:12.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:.05em;transition:all .15s;}
-  .block-tab.active{background:#C8A03A14;border-color:#C8A03A55;color:var(--gold);}
+  .block-tab.active{background:var(--gold);border-color:var(--gold);color:#FFFFFF;font-weight:700;}
   .block-add{padding:8px 12px;background:transparent;border:1px dashed var(--line2);border-radius:5px;cursor:pointer;font-size:12.5px;color:var(--dim);font-family:'JetBrains Mono',monospace;}
   .block-add:hover{color:var(--gold);border-color:var(--gold);}
   .block-del{padding:8px 10px;background:transparent;border:1px solid var(--line);border-radius:5px;cursor:pointer;font-size:11.5px;color:#8a4a4a;font-family:'JetBrains Mono',monospace;}
@@ -47,6 +47,7 @@
   .legend{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:16px;padding:10px 14px;background:var(--panel);border:1px solid var(--line);border-radius:6px;}
   .legend-item{display:flex;align-items:center;gap:6px;font-size:10.5px;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:.05em;}
   .legend-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+  .legend-rir{font-weight:700;letter-spacing:.02em;}
 
   /* Day tabs */
   .day-row{display:flex;gap:6px;margin-bottom:14px;}
@@ -62,23 +63,26 @@
   table.log{width:100%;border-collapse:collapse;font-size:13px;}
   table.log th, table.log td{padding:9px 8px;border-bottom:1px solid var(--line);white-space:nowrap;}
   table.log th{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.08em;color:var(--muted);text-align:center;font-weight:600;border-bottom:1px solid var(--line2);position:sticky;top:0;}
-  table.log td.col-ex{position:sticky;left:0;background:var(--panel);min-width:175px;white-space:normal;border-right:1px solid var(--line2);z-index:2;}
-  table.log th.col-ex{position:sticky;left:0;background:var(--panel);z-index:3;border-right:1px solid var(--line2);text-align:left;min-width:175px;}
-  .ex-name-input{width:100%;background:transparent;border:none;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;padding:2px 0;}
-  .ex-target-input{width:100%;background:transparent;border:none;color:var(--muted);font-size:15px;font-family:'JetBrains Mono',monospace;outline:none;padding:1px 0;margin-top:2px;}
+  table.log td.col-ex{position:sticky;left:0;background:var(--panel);min-width:200px;white-space:normal;border-right:1px solid var(--line2);z-index:2;}
+  table.log th.col-ex{position:sticky;left:0;background:var(--panel);z-index:3;border-right:1px solid var(--line2);text-align:left;min-width:200px;}
+  .ex-name-input{width:100%;background:transparent;border:none;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;padding:2px 0;resize:none;line-height:1.3;overflow:hidden;}
+  .ex-target-input{width:100%;background:transparent;border:none;color:var(--muted);font-size:15px;font-family:'JetBrains Mono',monospace;outline:none;padding:1px 0;}
+  .ex-meta-row{display:flex;flex-direction:column;gap:1px;margin-top:3px;}
+  .ex-rest-input{width:100%;background:transparent;border:none;border-top:1px solid var(--line2);color:#5A9EC8;font-size:12.5px;font-family:'JetBrains Mono',monospace;outline:none;padding:3px 0 0 0;}
+  .ex-rest-input::placeholder, .ex-target-input::placeholder{color:#D6D9CC;}
   td.col-week{text-align:center;}
   .wcell-group{display:flex;flex-direction:column;gap:4px;width:60px;margin:0 auto;}
   .wcell-labels{display:flex;justify-content:space-between;padding:0 2px;margin-bottom:1px;}
   .wcell-label{font-size:7px;letter-spacing:.1em;color:var(--dim);font-family:'JetBrains Mono',monospace;}
   .wcell{width:100%;background:#08090800;border:1px solid var(--line2);border-radius:4px;color:var(--text);text-align:center;padding:6px 2px;font-size:16px;font-weight:600;outline:none;}
-  .wcell-reps{color:#8A9A88;font-weight:500;font-size:14px;}
+  .wcell-reps{color:#5C6B54;font-weight:500;font-size:14px;}
   .wcell:focus{border-color:var(--gold);background:#C8A03A0A;}
-  .wcell::placeholder{color:#2A302A;font-weight:400;}
+  .wcell::placeholder{color:#D6D9CC;font-weight:400;}
   th.col-week-head{padding:6px 4px 4px;}
-  .phase-pill{display:inline-block;font-size:8.5px;letter-spacing:.08em;padding:1px 5px;border-radius:8px;margin-bottom:3px;}
+  .phase-pill{display:inline-block;font-size:9px;font-weight:700;letter-spacing:.08em;padding:2px 7px;border-radius:8px;margin-bottom:4px;}
   .col-spark{text-align:center;min-width:70px;}
   .col-del{text-align:center;width:30px;}
-  .del-btn{background:transparent;border:none;color:#3A302A;cursor:pointer;font-size:14px;}
+  .del-btn{background:transparent;border:none;color:#C9CCC0;cursor:pointer;font-size:14px;}
   .del-btn:hover{color:#A85050;}
 
   .add-row-btn{display:block;width:100%;padding:10px;background:transparent;border:none;border-top:1px solid var(--line);color:var(--dim);font-size:11.5px;letter-spacing:.08em;font-family:'JetBrains Mono',monospace;cursor:pointer;text-align:left;padding-left:14px;}
@@ -101,17 +105,17 @@
   .gate-label{font-size:10px;letter-spacing:.25em;color:var(--gold);font-family:'JetBrains Mono',monospace;margin-bottom:18px;text-align:center;}
   .gate-users{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
   .gate-user-row{display:flex;align-items:center;gap:6px;}
-  .gate-user{flex:1;display:flex;align-items:center;gap:10px;padding:11px 12px;background:#0A0B0A;border:1px solid var(--line2);border-radius:7px;color:var(--text);cursor:pointer;font-size:14.5px;font-family:'DM Sans',sans-serif;text-align:left;transition:all .15s;}
+  .gate-user{flex:1;display:flex;align-items:center;gap:10px;padding:11px 12px;background:#F1F2EC;border:1px solid var(--line2);border-radius:7px;color:var(--text);cursor:pointer;font-size:14.5px;font-family:'DM Sans',sans-serif;text-align:left;transition:all .15s;}
   .gate-user:hover{border-color:var(--gold);background:#C8A03A0C;}
-  .gate-avatar{width:26px;height:26px;border-radius:50%;background:#C8A03A22;color:var(--gold);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
-  .gate-user-del{background:transparent;border:none;color:#3A302A;cursor:pointer;font-size:14px;padding:6px;}
+  .gate-avatar{width:26px;height:26px;border-radius:50%;background:var(--gold);color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;font-family:'JetBrains Mono',monospace;flex-shrink:0;}
+  .gate-user-del{background:transparent;border:none;color:#C9CCC0;cursor:pointer;font-size:14px;padding:6px;}
   .gate-user-del:hover{color:#A85050;}
   .gate-empty{font-size:12px;color:var(--muted);text-align:center;margin-bottom:18px;line-height:1.7;}
   .gate-new{display:flex;gap:6px;}
-  .gate-input{flex:1;background:#0A0B0A;border:1px solid var(--line2);border-radius:6px;color:var(--text);padding:10px 10px;font-size:13.5px;outline:none;font-family:'DM Sans',sans-serif;}
+  .gate-input{flex:1;background:#F1F2EC;border:1px solid var(--line2);border-radius:6px;color:var(--text);padding:10px 10px;font-size:13.5px;outline:none;font-family:'DM Sans',sans-serif;}
   .gate-input:focus{border-color:var(--gold);}
-  .gate-create{background:#C8A03A18;border:1px solid #C8A03A55;border-radius:6px;color:var(--gold);padding:10px 14px;font-size:12px;font-family:'JetBrains Mono',monospace;cursor:pointer;letter-spacing:.04em;}
-  .gate-create:hover{background:#C8A03A28;}
+  .gate-create{background:var(--gold);border:1px solid var(--gold);border-radius:6px;color:#FFFFFF;font-weight:700;padding:10px 14px;font-size:12px;font-family:'JetBrains Mono',monospace;cursor:pointer;letter-spacing:.04em;}
+  .gate-create:hover{background:#B38E2E;}
 
   /* User bar inside app */
   .user-bar{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;padding:9px 12px;background:var(--panel);border:1px solid var(--line);border-radius:6px;}
@@ -128,7 +132,7 @@
 
     /* Table : colonnes plus compactes, plus de colonnes visibles sans scroller */
     table.log th, table.log td{padding:7px 5px;}
-    table.log td.col-ex, table.log th.col-ex{min-width:130px;}
+    table.log td.col-ex, table.log th.col-ex{min-width:165px;}
     .ex-name-input{font-size:13.5px;}
     .wcell-group{width:60px;}
     .wcell{font-size:17px;padding:7px 2px;}
@@ -145,7 +149,7 @@
 
     /* Empêche le zoom automatique iOS sur les champs de saisie */
     .wcell, .gate-input, .block-name-input, .day-title-edit{font-size:17px;}
-    .ex-target-input{font-size:16px;}
+    .ex-target-input, .ex-rest-input{font-size:16px;}
 
     .user-bar{padding:10px;}
     .user-bar-name{font-size:13px;}
@@ -156,7 +160,7 @@
   }
 
   @media (max-width: 380px){
-    table.log td.col-ex, table.log th.col-ex{min-width:110px;}
+    table.log td.col-ex, table.log th.col-ex{min-width:140px;}
     .wcell-group{width:52px;}
     .wcell{font-size:16px;}
     .wcell-reps{font-size:14px;}
@@ -195,11 +199,11 @@
   function dataKey(){ return "carnet_data_v1::" + currentUser; }
 
   const PHASES = {
-    accu:    { label: "Accumulation", color: "#5A9EC8" },
-    inten:   { label: "Intensification", color: "#7ABF5A" },
-    pic:     { label: "Pic", color: "#D4753A" },
-    deload:  { label: "Deload", color: "#BF5A9E" },
-    extra:   { label: "Continuité", color: "#7A7A7A" },
+    accu:    { label: "Accumulation", color: "#5A9EC8", rir: "RIR 3" },
+    inten:   { label: "Intensification", color: "#7ABF5A", rir: "RIR 2→1" },
+    pic:     { label: "Pic", color: "#D4753A", rir: "RIR 0–1" },
+    deload:  { label: "Deload", color: "#BF5A9E", rir: "RIR 4–5" },
+    extra:   { label: "Continuité", color: "#7A7A7A", rir: "RIR 2" },
   };
 
   function defaultWeeks(){
@@ -229,6 +233,7 @@
           ex.weights = (ex.weights || []).map(normCell);
           while (ex.weights.length < n) ex.weights.push({ kg: "", reps: "" });
           if (ex.weights.length > n) ex.weights = ex.weights.slice(0, n);
+          if (ex.rest === undefined) ex.rest = "";
         });
       });
     });
@@ -243,35 +248,39 @@
       weeks: weeks,
       days: {
         A: {
-          title: "Jour A — Force",
+          title: "Jour A — Lundi",
           exercises: [
-            { name: "Squat barre", target: "4×5–7", weights: emptyWeights(n) },
-            { name: "Développé couché barre", target: "4×5–7", weights: emptyWeights(n) },
-            { name: "Rowing barre", target: "4×5–7", weights: emptyWeights(n) },
-            { name: "Développé militaire haltères", target: "3×6–8", weights: emptyWeights(n) },
-            { name: "Leg curl couché", target: "3×8–10", weights: emptyWeights(n) },
+            { name: "Développé couché barre", target: "3×5–7", rest: "3m30", weights: emptyWeights(n) },
+            { name: "Tractions", target: "3×6–8", rest: "3m30", weights: emptyWeights(n) },
+            { name: "Squat", target: "3×6–8", rest: "2m30", weights: emptyWeights(n) },
+            { name: "Développé militaire", target: "3×8–10", rest: "2 min", weights: emptyWeights(n) },
+            { name: "Curl haltères incliné", target: "3×10–12", rest: "2 min", weights: emptyWeights(n) },
+            { name: "Abdos", target: "4×15", rest: "1m30", weights: emptyWeights(n) },
+            { name: "Lombaires", target: "4×15", rest: "1m30", weights: emptyWeights(n) },
           ]
         },
         B: {
-          title: "Jour B — Hypertrophie",
+          title: "Jour B — Mercredi",
           exercises: [
-            { name: "Développé incliné haltères", target: "4×8–12", weights: emptyWeights(n) },
-            { name: "Traction lestée", target: "4×6–10", weights: emptyWeights(n) },
-            { name: "Presse à cuisses", target: "4×10–15", weights: emptyWeights(n) },
-            { name: "Élévations latérales câble", target: "4×12–15", weights: emptyWeights(n) },
-            { name: "Curl haltères incliné", target: "3×10–12", weights: emptyWeights(n) },
-            { name: "Extension mollets debout", target: "3×12–15", weights: emptyWeights(n) },
+            { name: "Développé incliné haltères", target: "4×8–12", rest: "2m30", weights: emptyWeights(n) },
+            { name: "Tirage horizontal prise large", target: "3×6–10", rest: "2 min", weights: emptyWeights(n) },
+            { name: "SDT roumain", target: "3×10–15", rest: "2 min", weights: emptyWeights(n) },
+            { name: "Élévations latérales", target: "3×12–20", rest: "2 min", weights: emptyWeights(n) },
+            { name: "Triceps corde", target: "3×12–15", rest: "1m30", weights: emptyWeights(n) },
+            { name: "Extension mollets debout", target: "3×15–20", rest: "1m45", weights: emptyWeights(n) },
+            { name: "Obliques", target: "4×15", rest: "1 min", weights: emptyWeights(n) },
           ]
         },
         C: {
-          title: "Jour C — Volume",
+          title: "Jour C — Vendredi",
           exercises: [
-            { name: "Fentes bulgares", target: "3×8–10/j", weights: emptyWeights(n) },
-            { name: "Écarté poulie basse", target: "3×12–15", weights: emptyWeights(n) },
-            { name: "Rowing 1 bras haltère", target: "3×10–12", weights: emptyWeights(n) },
-            { name: "Hip thrust barre", target: "3×10–12", weights: emptyWeights(n) },
-            { name: "Face pull câble", target: "3×15–20", weights: emptyWeights(n) },
-            { name: "Triceps poulie haute", target: "3×12–15", weights: emptyWeights(n) },
+            { name: "Tractions", target: "3×15–20", rest: "1 min", weights: emptyWeights(n) },
+            { name: "Butterfly", target: "3×15–20", rest: "1 min", weights: emptyWeights(n) },
+            { name: "Fentes bulgares", target: "3×15–20", rest: "1 min", weights: emptyWeights(n) },
+            { name: "Face pull corde", target: "3×15–20", rest: "1m45", weights: emptyWeights(n) },
+            { name: "Curl marteau banc", target: "3×15–20", rest: "1m45", weights: emptyWeights(n) },
+            { name: "Abdos suspension", target: "4×15", rest: "1m30", weights: emptyWeights(n) },
+            { name: "Lombaires", target: "4×15", rest: "1m30", weights: emptyWeights(n) },
           ]
         }
       }
@@ -319,7 +328,7 @@
 
   function sparkline(weights, color){
     const nums = weights.map(c => parseFloat(c && c.kg)).filter(n => !isNaN(n) && n > 0);
-    if (nums.length < 1) return '<span style="color:#2A302A;font-size:9px;">—</span>';
+    if (nums.length < 1) return '<span style="color:#D6D9CC;font-size:9px;">—</span>';
     const max = Math.max(...nums), min = Math.min(...nums);
     const range = max - min || 1;
     const w = 60, h = 20, n = weights.length;
@@ -370,7 +379,7 @@
     Object.keys(PHASES).forEach(k => {
       const used = block.weeks.some(w => w.phase === k);
       if (!used) return;
-      html += `<div class="legend-item"><div class="legend-dot" style="background:${PHASES[k].color}"></div>${PHASES[k].label.toUpperCase()}</div>`;
+      html += `<div class="legend-item"><div class="legend-dot" style="background:${PHASES[k].color}"></div>${PHASES[k].label.toUpperCase()} <span class="legend-rir" style="color:${PHASES[k].color}">${PHASES[k].rir}</span></div>`;
     });
     html += '</div>';
 
@@ -378,7 +387,7 @@
     html += '<div class="day-row">';
     [["A","Lundi"],["B","Mercredi"],["C","Vendredi"]].forEach(([id,label]) => {
       const active = state.activeDay === id;
-      html += `<div class="day-tab ${active?'active':''}" data-action="select-day" data-id="${id}" style="${active?`border-color:${dayColor}55;color:${dayColor};background:${dayColor}14;`:''}">${id}<div class="dtl">${label}</div></div>`;
+      html += `<div class="day-tab ${active?'active':''}" data-action="select-day" data-id="${id}" style="${active?`border-color:${dayColor};color:#FFFFFF;background:${dayColor};font-weight:700;`:''}">${id}<div class="dtl">${label}</div></div>`;
     });
     html += '</div>';
 
@@ -390,7 +399,7 @@
     html += '<th class="col-ex">EXERCICE</th>';
     block.weeks.forEach((w, wi) => {
       const ph = PHASES[w.phase] || PHASES.extra;
-      html += `<th class="col-week-head"><span class="phase-pill" style="background:${ph.color}22;color:${ph.color};">${ph.label.slice(0,4).toUpperCase()}</span><br/><input class="ex-target-input" style="text-align:center;color:${ph.color};font-size:14px;" data-action="rename-week" data-week="${wi}" value="${escapeAttr(w.label)}" /></th>`;
+      html += `<th class="col-week-head"><span class="phase-pill" style="background:${ph.color};color:#FFFFFF;">${ph.label.slice(0,4).toUpperCase()}</span><br/><input class="ex-target-input" style="text-align:center;color:${ph.color};font-size:14px;font-weight:700;" data-action="rename-week" data-week="${wi}" value="${escapeAttr(w.label)}" /></th>`;
     });
     html += '<th class="col-spark">PROGRESSION</th><th class="col-del"></th>';
     html += '</tr></thead><tbody>';
@@ -398,8 +407,11 @@
     day.exercises.forEach((ex, ei) => {
       html += '<tr>';
       html += `<td class="col-ex">
-        <input class="ex-name-input" data-action="rename-ex" data-ex="${ei}" value="${escapeAttr(ex.name)}" />
-        <input class="ex-target-input" data-action="retarget-ex" data-ex="${ei}" value="${escapeAttr(ex.target)}" />
+        <textarea class="ex-name-input" data-action="rename-ex" data-ex="${ei}" rows="2">${escapeHtml(ex.name)}</textarea>
+        <div class="ex-meta-row">
+          <input class="ex-target-input" data-action="retarget-ex" data-ex="${ei}" value="${escapeAttr(ex.target)}" placeholder="séries×reps" />
+          <input class="ex-rest-input" data-action="rest-ex" data-ex="${ei}" value="${escapeAttr(ex.rest || '')}" placeholder="repos" />
+        </div>
       </td>`;
       block.weeks.forEach((w, wi) => {
         const ph = PHASES[w.phase] || PHASES.extra;
@@ -506,6 +518,14 @@
       });
     });
 
+    body.querySelectorAll('[data-action="rest-ex"]').forEach(el => {
+      el.addEventListener("change", () => {
+        const ei = parseInt(el.dataset.ex, 10);
+        getActiveBlock().days[state.activeDay].exercises[ei].rest = el.value;
+        scheduleSave();
+      });
+    });
+
     body.querySelectorAll('[data-action="weight"]').forEach(el => {
       el.addEventListener("input", () => {
         const ei = parseInt(el.dataset.ex, 10);
@@ -544,7 +564,7 @@
     const addExBtn = body.querySelector('[data-action="add-ex"]');
     if (addExBtn) addExBtn.addEventListener("click", () => {
       const n = getActiveBlock().weeks.length;
-      getActiveBlock().days[state.activeDay].exercises.push({ name: "Nouvel exercice", target: "3×10", weights: emptyWeights(n) });
+      getActiveBlock().days[state.activeDay].exercises.push({ name: "Nouvel exercice", target: "3×10", rest: "", weights: emptyWeights(n) });
       scheduleSave(); render();
     });
 
